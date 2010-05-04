@@ -1,0 +1,72 @@
+NAME
+    Algorithm::Diff::Callback - Use callbacks on computed differences
+
+VERSION
+    Version 0.01
+
+SYNOPSIS
+    One of the difficulties when using diff modules is that they assume they
+    know what you want the information for. Some give you formatted output,
+    some give you just the values that changes (but neglect to mention how
+    each changed) and some (such as Algorithm::Diff) give you way too much
+    information that you now have to skim and write long complex loops for.
+
+    Algorithm::Diff::Callback let's you pick what you're going to diff
+    (Array, Hashes) and set callbacks for the diff process.
+
+        use Algorithm::Diff::Callback 'diff_arrays';
+
+        diff_arrays(
+            \@old_family_members,
+            \@new_family_members,
+            sub { print "Happy to hear about ", shift },
+            sub { print "Sorry to hear about ", shift },
+        );
+
+EXPORT
+  diff_arrays
+  diff_hashes
+    Read about them in the next section.
+
+SUBROUTINES/METHODS
+  diff_arrays(\@old, \@new, \&old, \&new)
+  diff_hashes(\%old, \%new, \&old, \&new, \&change)
+AUTHOR
+    Sawyer X, "<xsawyerx at cpan.org>"
+
+BUGS
+    Please report bugs on the Github issues page at ....
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Algorithm::Diff::Callback
+
+    You can also look for information at:
+
+    *   RT: CPAN's request tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Algorithm-Diff-Callback>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/Algorithm-Diff-Callback>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/Algorithm-Diff-Callback>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/Algorithm-Diff-Callback/>
+
+ACKNOWLEDGEMENTS
+LICENSE AND COPYRIGHT
+    Copyright 2010 Sawyer X.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either: the GNU General Public License as published
+    by the Free Software Foundation; or the Artistic License.
+
+    See http://dev.perl.org/licenses/ for more information.
+
