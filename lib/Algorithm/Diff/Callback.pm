@@ -5,7 +5,7 @@ use warnings;
 
 use Carp;
 use Exporter        'import';
-use List::AllUtils  'uniq';
+use List::MoreUtils 'uniq';
 use Algorithm::Diff 'diff';
 
 our $VERSION   = '0.01';
