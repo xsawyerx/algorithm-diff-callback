@@ -77,23 +77,40 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-One of the difficulties when using diff modules is that they assume they know
-what you want the information for. Some give you formatted output, some give you
-just the values that changes (but neglect to mention how each changed) and some
-(such as L<Algorithm::Diff>) give you way too much information that you now have
-to skim and write long complex loops for.
-
-L<Algorithm::Diff::Callback> let's you pick what you're going to diff (Array,
-Hashes) and set callbacks for the diff process.
+Use callbacks in your diff process to get better control over what will happen.
 
     use Algorithm::Diff::Callback 'diff_arrays';
 
     diff_arrays(
         \@old_family_members,
         \@new_family_members,
-        sub { print "Happy to hear about ", shift },
-        sub { print "Sorry to hear about ", shift },
+        sub { print 'Happy to hear about ', shift },
+        sub { print 'Sorry to hear about ', shift },
     );
+
+Or using hashes:
+
+    use Algorithm::Diff::Callback 'diff_hashes';
+
+    diff_hashes(
+        \%old_details,
+        \%new_details,
+        sub { print 'Lost ',   shift },
+        sub { print 'Gained ', shift },
+        sub {
+            my ( $key, $before, $after ) = @_;
+            print "$key changed from $before to $after\n";
+        },
+    );
+
+One of the difficulties when using diff modules is that they assume they know
+what you want the information for. Some give you formatted output, some give you
+just the values that changes (but neglect to mention how each changed) and some
+(such as L<Algorithm::Diff>) give you way too much information that you now have
+to skim over and write long complex loops for.
+
+L<Algorithm::Diff::Callback> let's you pick what you're going to diff (Array,
+Hashes) and set callbacks for the diff process.
 
 =head1 EXPORT
 
@@ -101,13 +118,34 @@ Hashes) and set callbacks for the diff process.
 
 =head2 diff_hashes
 
-Read about them in the next section.
-
 =head1 SUBROUTINES/METHODS
 
-=head2 diff_arrays(\@old, \@new, \&old, \&new)
+=head2 diff_arrays(\@old, \@new, \&removed, \&added)
 
-=head2 diff_hashes(\%old, \%new, \&old, \&new, \&change)
+The first two parameters are array references to compare.
+
+The second two parameters are subroutine references which will be called and
+given the value that was either removed or added during the diff process.
+
+The comparison is explicitly the second one B<against> the first one.
+
+That means that if you give a I<removed> subroutine, it really means that a
+value that existed in the first arrayref does not exist in the second arrayref.
+
+If you gave a I<added> subroutine, it really means that a value that did B<not>
+exist in the first arrayref now exists in the second one.
+
+=head2 diff_hashes(\%old, \%new, \&removed, \&added, \&change)
+
+The first two parameters are hash references to compare.
+
+The second two paramters are the subroutine references which will be called and
+given the key and value that was either removed or added during the diff
+process.
+
+The third parameter is a subroutine reference of information that changed
+between the first and second hashes. It will be given the key that was changed,
+the value it had before and the value it now has in the new reference.
 
 =head1 AUTHOR
 
@@ -115,9 +153,12 @@ Sawyer X, C<< <xsawyerx at cpan.org> >>
 
 =head1 BUGS
 
-Please report bugs on the Github issues page at L<...>.
+Please report bugs on the Github issues page at
+L<http://github.com/xsawyerx/algorithm-diff-callback/issues>.
 
 =head1 SUPPORT
+
+This module sports 100% test coverage, but in case you have more issues...
 
 You can find documentation for this module with the perldoc command.
 
@@ -126,6 +167,10 @@ You can find documentation for this module with the perldoc command.
 You can also look for information at:
 
 =over 4
+
+=item * Github issues tracker
+
+L<http://github.com/xsawyerx/algorithm-diff-callback/issues>
 
 =item * RT: CPAN's request tracker
 
@@ -145,7 +190,15 @@ L<http://search.cpan.org/dist/Algorithm-Diff-Callback/>
 
 =back
 
-=head1 ACKNOWLEDGEMENTS
+=head1 DEPENDENCIES
+
+L<Algorithm::Diff>
+
+L<List::MoreUtils>
+
+L<Carp>
+
+L<Exporter>
 
 =head1 LICENSE AND COPYRIGHT
 
