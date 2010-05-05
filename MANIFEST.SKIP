@@ -1,0 +1,13 @@
+^MYMETA.yml$
+^.git
+^MANIFEST\.
+^Makefile$
+^blib/
+^MakeMaker-\d
+
+# Temp, old and emacs backup files.
+~$
+\.old$
+^#.*#$
+^\.#
+\.swp$
