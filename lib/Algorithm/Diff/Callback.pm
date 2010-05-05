@@ -57,7 +57,7 @@ sub diff_arrays {
             } elsif ( $change eq '-' ) {
                 $del_cb->($value);
             } else {
-                croak "Can't recognize change in changeset: '$change'\n";
+                croak "Can't recognize change in changeset: '$change'";
             }
         }
     }

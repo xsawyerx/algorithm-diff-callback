@@ -4,6 +4,7 @@ lib/Algorithm/Diff/Callback.pm
 MANIFEST
 README
 t/00-load.t
+t/croak.t
 t/diff_arrays.t
 t/diff_hashes.t
 t/manifest.t

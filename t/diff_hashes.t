@@ -8,12 +8,16 @@ use Algorithm::Diff::Callback 'diff_hashes';
 
 my %old = (
     tvshow => 'Psych',
+    book   => 'Damnation Game',
     band   => 'Catharsis',
+    movie  => undef,
 );
 
 my %new = (
     tvshow => 'CSI (Las Vegas)', # new favorite tv show
+    book   => 'Damnation Game',  # <3 Cliver Barker
     artist => 'Michael Jackson', # ah, the classics
+    movie  => undef,             # decisions, decisions
 );
 
 diff_hashes(
