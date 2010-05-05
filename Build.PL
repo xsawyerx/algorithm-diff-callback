@@ -9,6 +9,10 @@ my $builder = Module::Build->new(
     dist_version_from  => 'lib/Algorithm/Diff/Callback.pm',
     build_requires => {
         'Test::More'      => 0,
+    },
+    requires => {
+        'Carp'            => 0,
+        'Exporter'        => 0,
         'List::MoreUtils' => 0,
     },
     add_to_cleanup     => [ 'Algorithm-Diff-Callback-*' ],
