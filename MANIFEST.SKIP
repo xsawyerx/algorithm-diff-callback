@@ -4,6 +4,8 @@
 ^Makefile$
 ^blib/
 ^MakeMaker-\d
+^_build/
+^Build$
 
 # Temp, old and emacs backup files.
 ~$

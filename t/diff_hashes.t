@@ -1,0 +1,57 @@
+#!perl
+
+use strict;
+use warnings;
+
+use Test::More tests => 11;
+use Algorithm::Diff::Callback 'diff_hashes';
+
+my %old = (
+    tvshow => 'Psych',
+    band   => 'Catharsis',
+);
+
+my %new = (
+    tvshow => 'CSI (Las Vegas)', # new favorite tv show
+    artist => 'Michael Jackson', # ah, the classics
+);
+
+diff_hashes(
+    \%old, \%new,
+    sub {
+        my ( $name, $val ) = @_;
+        is( $name, 'band',      'Band was removed' );
+        is( $val,  'Catharsis', 'Correct band'     );
+    },
+    sub {
+        my ( $name, $val ) = @_;
+        is( $name, 'artist',          'Artist added'   );
+        is( $val,  'Michael Jackson', 'Correct artist' );
+    },
+    sub {
+        my ( $name, $before, $after ) = @_;
+        is( $name,   'tvshow',          'Changing tv show'         );
+        is( $before, 'Psych',           'Was Psych'                );
+        is( $after,  'CSI (Las Vegas)', 'It is now CSI Las Vegas!' );
+    },
+);
+
+my $empty_hash = 0;
+my $cb = sub { $empty_hash++ };
+diff_hashes( {}, {}, $cb, $cb, $cb );
+cmp_ok( $empty_hash, '==', 0, 'Empty hash does not get called' );
+
+my $no_change = 0;
+$cb = sub { $no_change++ };
+diff_hashes( \%old, \%old, $cb, $cb, $cb );
+cmp_ok( $no_change, '==', 0, 'No change does not get called' );
+
+my $new_count    = 0;
+my $change_count = 0;
+diff_hashes(
+    {}, \%new,
+    sub { $new_count-- }, sub { $new_count++ }, sub { $change_count++ },
+);
+
+cmp_ok( $new_count,    '==', scalar keys (%new), 'New from scratch' );
+cmp_ok( $change_count, '==', 0,                  'Nothing changed'  );
