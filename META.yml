@@ -6,7 +6,7 @@ build_requires:
   Test::More: 0
 configure_requires:
   Module::Build: 0.36
-generated_by: 'Module::Build version 0.3603'
+generated_by: 'Module::Build version 0.3607'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -15,11 +15,12 @@ name: Algorithm-Diff-Callback
 provides:
   Algorithm::Diff::Callback:
     file: lib/Algorithm/Diff/Callback.pm
-    version: 0.01
+    version: 0.02
 requires:
+  Algorithm::Diff: 0
   Carp: 0
   Exporter: 0
   List::MoreUtils: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+version: 0.02

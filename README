@@ -2,7 +2,7 @@ NAME
     Algorithm::Diff::Callback - Use callbacks on computed differences
 
 VERSION
-    Version 0.01
+    Version 0.02
 
 SYNOPSIS
     Use callbacks in your diff process to get better control over what will
