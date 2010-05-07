@@ -14,6 +14,7 @@ my $builder = Module::Build->new(
         'Carp'            => 0,
         'Exporter'        => 0,
         'List::MoreUtils' => 0,
+        'Algorithm::Diff' => 0,
     },
     add_to_cleanup     => [ 'Algorithm-Diff-Callback-*' ],
     create_makefile_pl => 'traditional',

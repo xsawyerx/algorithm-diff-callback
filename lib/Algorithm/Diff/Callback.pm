@@ -8,7 +8,7 @@ use Exporter        'import';
 use List::MoreUtils 'uniq';
 use Algorithm::Diff 'diff';
 
-our $VERSION   = '0.01';
+our $VERSION   = '0.02';
 our @EXPORT_OK = qw(diff_hashes diff_arrays);
 
 sub diff_hashes {
@@ -73,7 +73,7 @@ Algorithm::Diff::Callback - Use callbacks on computed differences
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
