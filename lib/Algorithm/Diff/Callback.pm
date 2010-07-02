@@ -8,16 +8,33 @@ use Exporter        'import';
 use List::MoreUtils 'uniq';
 use Algorithm::Diff 'diff';
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our @EXPORT_OK = qw(diff_hashes diff_arrays);
 
 sub diff_hashes {
     my ( $old, $new, $del_cb, $add_cb, $changed_cb ) = @_;
     my @changed = ();
 
+    # check old and new hashes
+    ref $old eq 'HASH' or croak 'Arg 1 must be a hashref';
+    ref $new eq 'HASH' or croak 'Arg 2 must be a hashref';
+
+    # check callbacks
+    {
+        my $count = 3;
+        foreach ( $del_cb, $add_cb, $changed_cb ) {
+            if ( defined $_ ) {
+                ref $_ eq 'CODE' or croak "Arg $count must be coderef or undef";
+            }
+
+            $count++;
+        }
+    }
+
+    # start doing the work
     foreach my $cell ( keys %{$new} ) {
         if ( ! exists $old->{$cell} ) {
-            $add_cb->( $cell, $new->{$cell} );
+            $add_cb and $add_cb->( $cell, $new->{$cell} );
         } else {
             push @changed, $cell;
         }
@@ -25,7 +42,7 @@ sub diff_hashes {
 
     foreach my $cell ( keys %{$old} ) {
         if ( ! exists $new->{$cell} ) {
-            $del_cb->( $cell, $old->{$cell} );
+            $del_cb and $del_cb->( $cell, $old->{$cell} );
         }
     }
 
@@ -34,13 +51,29 @@ sub diff_hashes {
         my $after  = $new->{$changed} || '';
 
         if ( $before ne $after ) {
-            $changed_cb->( $changed, $before, $after );
+            $changed_cb and $changed_cb->( $changed, $before, $after );
         }
     }
 }
 
 sub diff_arrays {
     my ( $old, $new, $del_cb, $add_cb ) = @_;
+
+    # check old and new hashes
+    ref $old eq 'ARRAY' or croak 'Arg 1 must be an arrayref';
+    ref $new eq 'ARRAY' or croak 'Arg 2 must be an arrayref';
+
+    # check callbacks
+    {
+        my $count = 3;
+        foreach ( $del_cb, $add_cb ) {
+            if ( defined $_ ) {
+                ref $_ eq 'CODE' or croak "Arg $count must be coderef or undef";
+            }
+
+            $count++;
+        }
+    }
 
     # normalize arrays
     my @old = uniq sort @{$old};
@@ -53,9 +86,9 @@ sub diff_arrays {
             my ( $change, undef, $value ) = @{$changeset};
 
             if ( $change eq '+' ) {
-                $add_cb->($value);
+                $add_cb and $add_cb->($value);
             } elsif ( $change eq '-' ) {
-                $del_cb->($value);
+                $del_cb and $del_cb->($value);
             } else {
                 croak "Can't recognize change in changeset: '$change'";
             }
@@ -73,7 +106,7 @@ Algorithm::Diff::Callback - Use callbacks on computed differences
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
@@ -109,7 +142,7 @@ just the values that changes (but neglect to mention how each changed) and some
 (such as L<Algorithm::Diff>) give you way too much information that you now have
 to skim over and write long complex loops for.
 
-L<Algorithm::Diff::Callback> let's you pick what you're going to diff (Array,
+L<Algorithm::Diff::Callback> let's you pick what you're going to diff (Arrays,
 Hashes) and set callbacks for the diff process.
 
 =head1 EXPORT
@@ -135,6 +168,11 @@ value that existed in the first arrayref does not exist in the second arrayref.
 If you gave a I<added> subroutine, it really means that a value that did B<not>
 exist in the first arrayref now exists in the second one.
 
+B<Note:> if you do not wish to give a certain subroutine, you can simply provide
+undef:
+
+    diff_arrays( \@old, \@new, undef, sub { 'added: ', $_[0], "\n" } );
+
 =head2 diff_hashes(\%old, \%new, \&removed, \&added, \&change)
 
 The first two parameters are hash references to compare.
@@ -146,6 +184,20 @@ process.
 The third parameter is a subroutine reference of information that changed
 between the first and second hashes. It will be given the key that was changed,
 the value it had before and the value it now has in the new reference.
+
+B<Note:> if you do not wish to give a certain subroutine, you can simply provide
+undef:
+
+    diff_hashes(
+        \%old,
+        \%new,
+        undef,
+        undef,
+        sub {
+            my ( $key, $before, $after ) = @_;
+            print "$key changed from $before to $after\n";
+        },
+    );
 
 =head1 AUTHOR
 
