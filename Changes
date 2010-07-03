@@ -1,6 +1,6 @@
 Revision history for Algorithm-Diff-Callback
 
-0.03
+0.03    03.07.10
         * You can now remit a subroutine reference if you don't want.
 
 0.02    08.05.10
