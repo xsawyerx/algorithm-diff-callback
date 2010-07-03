@@ -16,8 +16,8 @@ sub diff_hashes {
     my @changed = ();
 
     # check old and new hashes
-    ref $old eq 'HASH' or croak 'Arg 1 must be a hashref';
-    ref $new eq 'HASH' or croak 'Arg 2 must be a hashref';
+    ref $old eq 'HASH' or croak 'Arg 1 must be hashref';
+    ref $new eq 'HASH' or croak 'Arg 2 must be hashref';
 
     # check callbacks
     {
@@ -60,8 +60,8 @@ sub diff_arrays {
     my ( $old, $new, $del_cb, $add_cb ) = @_;
 
     # check old and new hashes
-    ref $old eq 'ARRAY' or croak 'Arg 1 must be an arrayref';
-    ref $new eq 'ARRAY' or croak 'Arg 2 must be an arrayref';
+    ref $old eq 'ARRAY' or croak 'Arg 1 must be arrayref';
+    ref $new eq 'ARRAY' or croak 'Arg 2 must be arrayref';
 
     # check callbacks
     {
