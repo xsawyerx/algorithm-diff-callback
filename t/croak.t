@@ -16,7 +16,7 @@ my @old = qw( one two  );
 my @new = qw( one four );
 $|++;
 
-eval { diff_arrays( \@old, \@new, sub {}, sub {} ) };
+eval { diff_arrays( \@old, \@new, added => sub {}, deleted => sub {} ) };
 ok( $@, 'Caught error' );
 
 like( $@, qr/Can't recognize change in changeset\: '\*'/, 'Unknown change' );

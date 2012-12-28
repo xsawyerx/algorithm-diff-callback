@@ -12,68 +12,44 @@ our $VERSION   = '0.03';
 our @EXPORT_OK = qw(diff_hashes diff_arrays);
 
 sub diff_hashes {
-    my ( $old, $new, $del_cb, $add_cb, $changed_cb ) = @_;
-    my @changed = ();
+    my ( $old, $new, %cbs ) = @_;
 
-    # check old and new hashes
     ref $old eq 'HASH' or croak 'Arg 1 must be hashref';
     ref $new eq 'HASH' or croak 'Arg 2 must be hashref';
 
-    # check callbacks
-    {
-        my $count = 3;
-        foreach ( $del_cb, $add_cb, $changed_cb ) {
-            if ( defined $_ ) {
-                ref $_ eq 'CODE' or croak "Arg $count must be coderef or undef";
-            }
-
-            $count++;
-        }
-    }
-
-    # start doing the work
-    foreach my $cell ( keys %{$new} ) {
-        if ( ! exists $old->{$cell} ) {
-            $add_cb and $add_cb->( $cell, $new->{$cell} );
+    my @changed = ();
+    foreach my $key ( keys %{$new} ) {
+        if ( ! exists $old->{$key} ) {
+            exists $cbs{'added'}
+                and $cbs{'added'}->( $key, $new->{$key} );
         } else {
-            push @changed, $cell;
+            push @changed, $key;
         }
     }
 
-    foreach my $cell ( keys %{$old} ) {
-        if ( ! exists $new->{$cell} ) {
-            $del_cb and $del_cb->( $cell, $old->{$cell} );
+    foreach my $key ( keys %{$old} ) {
+        if ( ! exists $new->{$key} ) {
+            exists $cbs{'deleted'}
+                and $cbs{'deleted'}->( $key, $old->{$key} );
         }
     }
 
-    foreach my $changed (@changed) {
-        my $before = $old->{$changed} || '';
-        my $after  = $new->{$changed} || '';
+    foreach my $key (@changed) {
+        my $before = $old->{$key} || '';
+        my $after  = $new->{$key} || '';
 
         if ( $before ne $after ) {
-            $changed_cb and $changed_cb->( $changed, $before, $after );
+            exists $cbs{'changed'}
+                and $cbs{'changed'}->( $key, $before, $after );
         }
     }
 }
 
 sub diff_arrays {
-    my ( $old, $new, $del_cb, $add_cb ) = @_;
+    my ( $old, $new, %cbs ) = @_;
 
-    # check old and new hashes
     ref $old eq 'ARRAY' or croak 'Arg 1 must be arrayref';
     ref $new eq 'ARRAY' or croak 'Arg 2 must be arrayref';
-
-    # check callbacks
-    {
-        my $count = 3;
-        foreach ( $del_cb, $add_cb ) {
-            if ( defined $_ ) {
-                ref $_ eq 'CODE' or croak "Arg $count must be coderef or undef";
-            }
-
-            $count++;
-        }
-    }
 
     # normalize arrays
     my @old = uniq sort @{$old};
@@ -86,9 +62,9 @@ sub diff_arrays {
             my ( $change, undef, $value ) = @{$changeset};
 
             if ( $change eq '+' ) {
-                $add_cb and $add_cb->($value);
+                exists $cbs{'added'} and $cbs{'added'}->($value);
             } elsif ( $change eq '-' ) {
-                $del_cb and $del_cb->($value);
+                exists $cbs{'deleted'} and $cbs{'deleted'}->($value);
             } else {
                 croak "Can't recognize change in changeset: '$change'";
             }

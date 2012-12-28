@@ -22,17 +22,17 @@ my %new = (
 
 diff_hashes(
     \%old, \%new,
-    sub {
+    deleted => sub {
         my ( $name, $val ) = @_;
         is( $name, 'band',      'Band was removed' );
         is( $val,  'Catharsis', 'Correct band'     );
     },
-    sub {
+    added => sub {
         my ( $name, $val ) = @_;
         is( $name, 'artist',          'Artist added'   );
         is( $val,  'Michael Jackson', 'Correct artist' );
     },
-    sub {
+    changed => sub {
         my ( $name, $before, $after ) = @_;
         is( $name,   'tvshow',          'Changing tv show'         );
         is( $before, 'Psych',           'Was Psych'                );
@@ -42,19 +42,21 @@ diff_hashes(
 
 my $empty_hash = 0;
 my $cb = sub { $empty_hash++ };
-diff_hashes( {}, {}, $cb, $cb, $cb );
+diff_hashes( {}, {}, deleted => $cb, added => $cb, changed => $cb );
 cmp_ok( $empty_hash, '==', 0, 'Empty hash does not get called' );
 
 my $no_change = 0;
 $cb = sub { $no_change++ };
-diff_hashes( \%old, \%old, $cb, $cb, $cb );
+diff_hashes( \%old, \%old, deleted => $cb, added => $cb, changed => $cb );
 cmp_ok( $no_change, '==', 0, 'No change does not get called' );
 
 my $new_count    = 0;
 my $change_count = 0;
 diff_hashes(
     {}, \%new,
-    sub { $new_count-- }, sub { $new_count++ }, sub { $change_count++ },
+    deleted => sub { $new_count--    },
+    added   => sub { $new_count++    },
+    changed => sub { $change_count++ },
 );
 
 cmp_ok( $new_count,    '==', scalar keys (%new), 'New from scratch' );
