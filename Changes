@@ -1,5 +1,10 @@
 Revision history for Algorithm-Diff-Callback
 
+0.100   28.12.12
+        * Rewrite to use keys instead of positional parameters.
+        * Much cleanup.
+        * Dzilify.
+
 0.03    03.07.10
         * You can now remit a subroutine reference if you don't want.
 
