@@ -1,14 +1,14 @@
 package Algorithm::Diff::Callback;
+# ABSTRACT: Use callbacks on computed differences
 
 use strict;
 use warnings;
 
 use Carp;
-use Exporter        'import';
+use parent          'Exporter';
 use List::MoreUtils 'uniq';
 use Algorithm::Diff 'diff';
 
-our $VERSION   = '0.03';
 our @EXPORT_OK = qw(diff_hashes diff_arrays);
 
 sub diff_hashes {
@@ -75,14 +75,6 @@ sub diff_arrays {
 1;
 
 __END__
-
-=head1 NAME
-
-Algorithm::Diff::Callback - Use callbacks on computed differences
-
-=head1 VERSION
-
-Version 0.03
 
 =head1 SYNOPSIS
 
@@ -175,10 +167,6 @@ undef:
         },
     );
 
-=head1 AUTHOR
-
-Sawyer X, C<< <xsawyerx at cpan.org> >>
-
 =head1 BUGS
 
 Please report bugs on the Github issues page at
@@ -227,14 +215,4 @@ L<List::MoreUtils>
 L<Carp>
 
 L<Exporter>
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2010 Sawyer X.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
