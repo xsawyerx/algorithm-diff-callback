@@ -6,7 +6,7 @@ use warnings;
 
 use Carp;
 use parent          'Exporter';
-use List::MoreUtils 'uniq';
+use List::Util 1.45 'uniq';
 use Algorithm::Diff 'diff';
 
 our @EXPORT_OK = qw(diff_hashes diff_arrays);
