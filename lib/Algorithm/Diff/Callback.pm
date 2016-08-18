@@ -3,9 +3,9 @@ package Algorithm::Diff::Callback;
 
 use strict;
 use warnings;
-
-use Carp;
 use parent          'Exporter';
+
+use Carp            'croak';
 use List::Util 1.45 'uniq';
 use Algorithm::Diff 'diff';
 
@@ -17,7 +17,7 @@ sub diff_hashes {
     ref $old eq 'HASH' or croak 'Arg 1 must be hashref';
     ref $new eq 'HASH' or croak 'Arg 2 must be hashref';
 
-    my @changed = ();
+    my @changed;
     foreach my $key ( keys %{$new} ) {
         if ( ! exists $old->{$key} ) {
             exists $cbs{'added'}
@@ -43,6 +43,8 @@ sub diff_hashes {
                 and $cbs{'changed'}->( $key, $before, $after );
         }
     }
+
+    return;
 }
 
 sub diff_arrays {
@@ -70,6 +72,8 @@ sub diff_arrays {
             }
         }
     }
+
+    return;
 }
 
 1;
