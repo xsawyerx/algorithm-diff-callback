@@ -1,5 +1,8 @@
 Revision history for Algorithm-Diff-Callback
 
+0.110   18.08.16
+        * Switch to List::Util from List::MoreUtils.
+
 0.100   28.12.12
         * Rewrite to use keys instead of positional parameters.
         * Much cleanup.
